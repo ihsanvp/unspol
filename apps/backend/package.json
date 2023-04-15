@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts --watch ../../packages/koa-tus-server/src",
+    "dev": "nodemon src/server.ts --watch ../../packages/koa-tus-server/src --watch src",
     "build": "tsc",
     "start": "node build/server",
     "test": "echo \"Error: no test specified\" && exit 1"

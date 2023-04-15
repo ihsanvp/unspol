@@ -17,6 +17,7 @@
 		const file = fileinput.files[0];
 		const upload = new Upload(file, {
 			endpoint: 'http://localhost:8000/uploads/',
+			chunkSize: 50 * 1024 * 1024, // 50 MB
 			metadata: {
 				filename: file.name,
 				filetype: file.type

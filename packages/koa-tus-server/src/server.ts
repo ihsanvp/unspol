@@ -69,6 +69,53 @@ export default class TusServer {
 
             ctx.set("Location", url)
             ctx.set("Tus-Resumable", this.tus_version)
+            ctx.status = 201
+        })
+
+
+
+        this.router.head("/:id", async (ctx) => {
+            const id = ctx.params.id
+            const upload = await this.backend.get(id)
+
+            if (!upload) {
+                return ctx.throw(404, "")
+            }
+
+            ctx.set("Cache-Control", "no-store")
+            ctx.set("Upload-Offset", String(upload.offset))
+            ctx.set("Upload-Length", String(upload.size))
+            ctx.set("Tus-Resumable", this.tus_version)
+            ctx.status = 200
+        })
+
+        this.router.patch("/:id", async (ctx) => {
+            const id = ctx.params.id
+            const length = parseInt(ctx.get("Content-Length"))
+            const offset = parseInt(ctx.get("Upload-Offset"))
+            const contentType = ctx.get("Content-Type")
+
+            if (contentType != "application/offset+octet-stream") {
+                return ctx.throw(415, "")
+            }
+
+            const upload = await this.backend.get(id)
+
+            if (!upload) {
+                return ctx.throw(404, "")
+            }
+
+            if (upload.offset != offset) {
+                return ctx.throw(409)
+            }
+
+            const newOffset = await this.storage.write(ctx.req, id, upload.offset)
+            await this.backend.update(id, {
+                ...upload,
+                offset: newOffset
+            })
+
+            ctx.status = 204
         })
     }
 }

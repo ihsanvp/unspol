@@ -17,15 +17,47 @@ const tusServer = new TusServer({
 })
 
 app.use(cors({
-    // allowHeaders: [
-    //     "Tus-Resumable"
-    // ],
-    // exposeHeaders: [
-    //     "Tus-Resumable",
-    //     "Tus-Version",
-    //     "Tus-Extension",
-    //     "Tus-Max-Size"
-    // ]
+    allowMethods: [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "HEAD",
+        "OPTIONS"
+    ],
+    allowHeaders: [
+        "Authorization",
+        "X-Requested-With",
+        "X-Request-ID",
+        "X-HTTP-Method-Override",
+        "Upload-Length",
+        "Upload-Offset",
+        "Tus-Resumable",
+        "Upload-Metadata",
+        "Upload-Defer-Length",
+        "Upload-Concat",
+        "User-Agent",
+        "Referrer",
+        "Origin",
+        "Content-Type",
+        "Content-Length"
+    ],
+    exposeHeaders: [
+        "Upload-Offset",
+        "Location",
+        "Upload-Length",
+        "Tus-Version",
+        "Tus-Resumable",
+        "Tus-Max-Size",
+        "Tus-Extension",
+        "Upload-Metadata",
+        "Upload-Defer-Length",
+        "Upload-Concat",
+        "Location",
+        "Upload-Offset",
+        "Upload-Length"
+    ]
 }))
 
 router.get("/", async (ctx) => {
