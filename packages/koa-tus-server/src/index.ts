@@ -1,7 +1,9 @@
-export const add = (a: number, b: number) => {
-    return a + b;
-};
+import TusServer from "./server";
+import RedisBackend from "./backends/redis.backend";
+import DiskStorage from "./storages/disk.storage";
 
-export const subtract = (a: number, b: number) => {
-    return a - b;
-};
+export {
+    TusServer,
+    RedisBackend,
+    DiskStorage
+}

@@ -1,27 +1,41 @@
 import Router from "@koa/router"
 import Koa from "koa"
 import cors from "@koa/cors"
-import UploadRouter from "./uploader/router"
 import { UPLOADS_DIR, UPLOADS_TEMP_DIR } from "./constants"
-import ensureDirectory from "./utils/ensureDirectory"
-import { add } from "koa-tus-server"
-
-ensureDirectory(UPLOADS_DIR)
-ensureDirectory(UPLOADS_TEMP_DIR)
+import { DiskStorage, RedisBackend, TusServer } from "koa-tus-server"
 
 const app = new Koa()
 const router = new Router()
+const tusServer = new TusServer({
+    max_upload_size: 10 * 1024 * 1024 * 1024, // 10 GB
+    backend: new RedisBackend({
+        url: "redis://localhost:6379"
+    }),
+    storage: new DiskStorage({
+        root: UPLOADS_DIR
+    })
+})
 
-app.use(cors())
+app.use(cors({
+    // allowHeaders: [
+    //     "Tus-Resumable"
+    // ],
+    // exposeHeaders: [
+    //     "Tus-Resumable",
+    //     "Tus-Version",
+    //     "Tus-Extension",
+    //     "Tus-Max-Size"
+    // ]
+}))
 
 router.get("/", async (ctx) => {
     ctx.body = {
         msg: "Hello",
-        result: add(1, 2)
     }
 })
 
-router.use("/uploads", UploadRouter.routes(), UploadRouter.allowedMethods())
+// router.use("/uploads", UploadRouter.routes(), UploadRouter.allowedMethods())
+router.use("/uploads", tusServer.router.routes(), tusServer.router.allowedMethods())
 
 app.use(router.routes())
 app.use(router.allowedMethods())
