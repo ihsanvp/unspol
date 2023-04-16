@@ -56,4 +56,14 @@ export default class DiskStorage implements TusStorage {
             })
         }) as Promise<number>
     }
+
+    async rename(id: string, name: string) {
+        const oldPath = path.join(this.root, id)
+        const parts = path.parse(name)
+        const newPath = path.join(this.root, parts.name + "__" + String(Date.now()) + parts.ext)
+
+        await fs.rename(oldPath, newPath)
+
+        return newPath
+    }
 }

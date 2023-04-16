@@ -60,8 +60,8 @@ export default class TusServer {
 
             await this.backend.set(id, {
                 offset: 0,
-                name: metadata.name,
-                mime: metadata.type,
+                name: metadata.filename,
+                mime: metadata.filetype,
                 url,
                 size,
                 location
@@ -114,6 +114,13 @@ export default class TusServer {
                 ...upload,
                 offset: newOffset
             })
+
+            if (newOffset == upload.size) {
+                await this.storage.rename(id, upload.name)
+
+                // TODO: Process uploaded file using background task
+                console.log("upload complete")
+            }
 
             ctx.status = 204
         })

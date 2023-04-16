@@ -14,7 +14,7 @@ export default class RedisBackend implements TusBackend {
         })
 
         // Check if redis is running and ready to connect
-        this.client.connect().then(() => this.client.disconnect().then(() => console.log("Redis Connection Available!"))).catch(() => console.log("Failed to connect to Redis"))
+        this.client.connect().then(() => this.client.disconnect().then(() => console.log("Redis Connection Available!"))).catch(() => console.log("Failed to connect to Redis Backend"))
     }
 
     async get(key: string) {
